@@ -1,0 +1,693 @@
+<style>
+  :root{
+    --navy:#131F38;
+    --navy-2:#1D2E52;
+    --steel:#3E4E72;
+    --red:#C63A2E;
+    --red-dark:#A32E24;
+    --green:#2E8B57;
+    --green-bg:#E7F4EC;
+    --amber:#B8791B;
+    --amber-bg:#FBF1DE;
+    --bg:#EFF2F6;
+    --surface:#FFFFFF;
+    --border:#DDE2EA;
+    --text:#182033;
+    --text-muted:#5C6478;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  #dn-root{
+    font-family:var(--font);
+    color:var(--text);
+    background:var(--bg);
+    min-height:600px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  #dn-root button{font-family:inherit;cursor:pointer;}
+  #dn-root input, #dn-root select{font-family:inherit;}
+  #dn-root a{color:inherit;}
+  #dn-root :focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+
+  /* ---------- Login ---------- */
+  .dn-login-wrap{
+    display:grid;
+    grid-template-columns: 1.05fr 1fr;
+    min-height:600px;
+  }
+  @media (max-width:760px){
+    .dn-login-wrap{grid-template-columns:1fr;}
+    .dn-login-side{display:none;}
+  }
+  .dn-login-side{
+    background:linear-gradient(165deg, var(--navy) 0%, var(--navy-2) 70%);
+    color:#fff;
+    padding:48px 44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+  }
+  .dn-login-side svg.dn-route{position:absolute;right:-40px;bottom:-30px;opacity:.16;width:340px;height:340px;}
+  .dn-brand-mark{
+    display:flex;align-items:center;gap:10px;
+    font-weight:700;font-size:15px;letter-spacing:.2px;
+  }
+  .dn-brand-mark .dn-logo{
+    width:30px;height:30px;border-radius:7px;background:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;
+  }
+  .dn-login-headline{max-width:380px;position:relative;z-index:1;}
+  .dn-login-headline h1{font-size:30px;line-height:1.28;font-weight:650;margin:0 0 14px;letter-spacing:-0.2px;}
+  .dn-login-headline p{color:#B9C2D6;font-size:14.5px;margin:0;max-width:320px;}
+  .dn-login-foot{color:#8996B4;font-size:12.5px;position:relative;z-index:1;}
+
+  .dn-login-form-col{
+    display:flex;align-items:center;justify-content:center;padding:32px;background:var(--surface);
+  }
+  .dn-login-card{width:100%;max-width:340px;}
+  .dn-login-card h2{font-size:20px;margin:0 0 6px;font-weight:650;}
+  .dn-login-card p.dn-sub{color:var(--text-muted);font-size:13.5px;margin:0 0 26px;}
+  .dn-field{margin-bottom:16px;}
+  .dn-field label{display:block;font-size:12.5px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
+  .dn-field input, .dn-field select{
+    width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;background:#fff;
+    transition:border-color .15s;
+  }
+  .dn-field input:focus, .dn-field select:focus{border-color:var(--navy-2);}
+  .dn-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    padding:11px 18px;border-radius:7px;border:none;font-size:14px;font-weight:620;
+    transition:transform .08s, opacity .15s;
+  }
+  .dn-btn:active{transform:scale(.98);}
+  .dn-btn-primary{background:var(--red);color:#fff;width:100%;}
+  .dn-btn-primary:hover{background:var(--red-dark);}
+  .dn-btn-secondary{background:var(--navy);color:#fff;}
+  .dn-btn-secondary:hover{background:var(--navy-2);}
+  .dn-btn-ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--border);}
+  .dn-btn-ghost:hover{border-color:var(--steel);color:var(--text);}
+  .dn-error{
+    background:#FCEBE9;color:var(--red-dark);font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:16px;
+    border:1px solid #F3C9C4;
+  }
+  .dn-hint-box{
+    margin-top:22px;padding:12px 13px;background:#F5F7FA;border-radius:7px;font-size:12px;color:var(--text-muted);
+    border:1px dashed var(--border);
+  }
+  .dn-hint-box b{color:var(--text);}
+
+  /* ---------- Shell ---------- */
+  .dn-shell{min-height:600px;}
+  .dn-topbar{
+    background:var(--navy);color:#fff;padding:14px 26px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  .dn-topbar-left{display:flex;align-items:center;gap:11px;}
+  .dn-topbar-left .dn-logo{width:28px;height:28px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;}
+  .dn-topbar-title{font-size:14.5px;font-weight:650;}
+  .dn-topbar-title span{display:block;font-size:11.5px;font-weight:400;color:#9FACC7;margin-top:1px;}
+  .dn-topbar-right{display:flex;align-items:center;gap:14px;}
+  .dn-user-chip{display:flex;align-items:center;gap:8px;font-size:13px;}
+  .dn-user-chip .dn-avatar{width:26px;height:26px;border-radius:50%;background:var(--steel);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+  .dn-role-tag{font-size:10.5px;background:rgba(255,255,255,.12);padding:2px 7px;border-radius:20px;margin-left:2px;}
+  .dn-logout-btn{background:transparent;border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:7px 11px;border-radius:6px;font-size:12.5px;display:flex;align-items:center;gap:6px;}
+  .dn-logout-btn:hover{background:rgba(255,255,255,.1);}
+
+  .dn-main{max-width:1080px;margin:0 auto;padding:28px 24px 60px;}
+  .dn-page-head{margin-bottom:22px;}
+  .dn-page-head h1{font-size:21px;margin:0 0 4px;font-weight:650;}
+  .dn-page-head p{color:var(--text-muted);font-size:13.5px;margin:0;}
+
+  .dn-grid{display:grid;grid-template-columns: 320px 1fr;gap:20px;align-items:start;}
+  @media (max-width:820px){.dn-grid{grid-template-columns:1fr;}}
+
+  .dn-panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    border-left:3px solid var(--navy-2);padding:20px;margin-bottom:20px;
+  }
+  .dn-panel h3{margin:0 0 3px;font-size:14.5px;font-weight:650;}
+  .dn-panel p.dn-panel-sub{margin:0 0 16px;font-size:12.5px;color:var(--text-muted);}
+  .dn-panel.dn-panel-alt{border-left-color:var(--red);}
+
+  .dn-file-drop{
+    border:1.5px dashed var(--border);border-radius:8px;padding:16px;text-align:center;font-size:12.5px;color:var(--text-muted);
+    margin-bottom:14px;background:#FAFBFC;
+  }
+  .dn-file-drop.dn-has-file{border-color:var(--green);background:var(--green-bg);color:var(--text);}
+  .dn-file-drop input[type=file]{margin-top:8px;font-size:12px;width:100%;}
+
+  .dn-stat-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .dn-stat{
+    flex:1;min-width:130px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:13px 15px;
+  }
+  .dn-stat .dn-stat-num{font-size:22px;font-weight:700;line-height:1;}
+  .dn-stat .dn-stat-label{font-size:11.5px;color:var(--text-muted);margin-top:5px;}
+  .dn-stat.dn-stat-amber .dn-stat-num{color:var(--amber);}
+  .dn-stat.dn-stat-green .dn-stat-num{color:var(--green);}
+
+  table.dn-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:13px;}
+  table.dn-table th{
+    text-align:left;background:#F6F7FA;color:var(--text-muted);font-weight:620;font-size:11.5px;
+    padding:10px 14px;border-bottom:1px solid var(--border);
+  }
+  table.dn-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+  table.dn-table tr:last-child td{border-bottom:none;}
+  .dn-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:620;padding:4px 9px;border-radius:20px;}
+  .dn-badge-green{background:var(--green-bg);color:var(--green);}
+  .dn-badge-amber{background:var(--amber-bg);color:var(--amber);}
+  .dn-icon-btn{
+    display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:#fff;border:none;padding:7px 11px;
+    border-radius:6px;font-size:12.5px;font-weight:600;
+  }
+  .dn-icon-btn:hover{background:var(--navy-2);}
+  .dn-empty{padding:34px 20px;text-align:center;color:var(--text-muted);font-size:13.5px;}
+  .dn-empty b{display:block;color:var(--text);font-size:14.5px;margin-bottom:5px;font-weight:650;}
+
+  .dn-supplier-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
+    display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap;
+  }
+  .dn-supplier-card .dn-sf-name{font-weight:650;font-size:14.5px;margin-bottom:3px;}
+  .dn-supplier-card .dn-sf-meta{font-size:12px;color:var(--text-muted);}
+  .dn-supplier-card.dn-downloaded{border-left:3px solid var(--green);}
+  .dn-supplier-card.dn-pending{border-left:3px solid var(--amber);}
+
+  .dn-toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;
+    padding:10px 18px;border-radius:8px;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:50;
+    display:flex;align-items:center;gap:8px;
+  }
+  .dn-supplier-list-wrap{margin-top:6px;max-height:210px;overflow-y:auto;padding-right:2px;}
+  .dn-supplier-mini{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--border);}
+  .dn-supplier-mini:last-child{border-bottom:none;}
+  .dn-supplier-mini span.dn-sm-user{color:var(--text-muted);font-size:11.5px;}
+
+  /* ---------- Pending upload preview ---------- */
+  .dn-pending-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;border-left:3px solid var(--amber);padding:18px 20px;margin-bottom:18px;}
+  .dn-pending-panel h3{margin:0 0 3px;font-size:14.5px;font-weight:650;}
+  .dn-pending-panel p.dn-panel-sub{margin:0 0 14px;font-size:12.5px;color:var(--text-muted);}
+  .dn-pending-row{
+    display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;
+  }
+  .dn-pending-row:last-of-type{border-bottom:none;}
+  .dn-pending-file{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;flex:1 1 220px;min-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dn-pending-supplier{flex:1 1 190px;min-width:170px;}
+  .dn-pending-supplier select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12.5px;}
+  .dn-pending-date input{padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12.5px;}
+  .dn-pending-date{flex:0 0 150px;}
+  .dn-remove-btn{background:transparent;border:none;color:var(--text-muted);font-size:16px;padding:4px 8px;border-radius:6px;flex:0 0 auto;}
+  .dn-remove-btn:hover{background:#F3E7E6;color:var(--red-dark);}
+  .dn-pending-actions{display:flex;gap:10px;margin-top:14px;}
+</style>
+
+<div id="dn-root"></div>
+
+<script>
+(function(){
+  const root = document.getElementById('dn-root');
+  let session = null;              // {username, role, name}
+  let usersCache = [];
+  let filesCache = [];
+  let pendingUploads = [];         // files picked but not yet confirmed/saved
+  let notice = null;               // {type:'error'|'info', msg}
+  let toast = null;
+
+  const ICONS = {
+    upload:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
+    download:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    check:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    clock:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    logout:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+    file:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+    plus:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  };
+
+  // ====== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA SETELAH DEPLOY ======
+  // Contoh: 'https://script.google.com/macros/s/AKfycbx.../exec'
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwhI_Apc8Tk59H0d9vOPKHh2Gjql8lzvtlB9XT0E-LZyig9qEk66jhEN0PKW23bNwcbEw/exec';
+  const MAX_PDF_BYTES = 8 * 1024 * 1024; // batas per file PDF (Drive jauh lebih longgar dari window.storage)
+
+  async function apiCall(action, payload){
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari preflight CORS ke Apps Script
+      body: JSON.stringify({ action, payload: payload || {} }),
+    });
+    if(!res.ok) throw new Error('Server error (' + res.status + ')');
+    const json = await res.json();
+    if(!json.ok) throw new Error(json.error || 'Terjadi kesalahan tidak diketahui.');
+    return json.data;
+  }
+
+  async function loadUsers(){
+    try{
+      usersCache = await apiCall('getUsers', {});
+    }catch(e){
+      usersCache = [];
+      notice = {type:'error', msg:'Gagal memuat data pengguna dari server: ' + e.message};
+    }
+  }
+  async function loadFiles(){
+    try{
+      const payload = (session && session.role==='supplier') ? {supplierUsername: session.username} : {};
+      filesCache = await apiCall('getFiles', payload);
+    }catch(e){
+      filesCache = [];
+      notice = {type:'error', msg:'Gagal memuat data file dari server: ' + e.message};
+    }
+  }
+
+  function fmtDate(iso){
+    if(!iso) return '-';
+    const d = new Date(iso);
+    return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) + ' · ' +
+           d.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+  }
+  function fmtDateOnly(isoDate){
+    if(!isoDate) return '-';
+    const d = new Date(isoDate + 'T00:00:00');
+    if(isNaN(d)) return '-';
+    return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
+  }
+  // Format nama file yang dikenali: NamaSupplier_YYYYMMDD.pdf
+  function parseDnFilename(name){
+    const base = name.replace(/\.pdf$/i, '').trim();
+    const parts = base.split('_');
+    if(parts.length >= 2){
+      const last = parts[parts.length - 1];
+      if(/^\d{8}$/.test(last)){
+        const y = last.slice(0,4), m = last.slice(4,6), d = last.slice(6,8);
+        return { supplierRaw: parts.slice(0, -1).join(' '), dateIso: `${y}-${m}-${d}` };
+      }
+    }
+    return { supplierRaw: base.replace(/_/g, ' '), dateIso: null };
+  }
+  function normalizeSupplierName(s){
+    return (s || '').toLowerCase().replace(/\b(pt|cv|ud|tbk|persero)\b/g, '').replace(/[^a-z0-9]/g, '');
+  }
+  function matchSupplierByName(supplierRaw, suppliers){
+    const norm = normalizeSupplierName(supplierRaw);
+    if(!norm) return null;
+    let found = suppliers.find(s => normalizeSupplierName(s.name) === norm);
+    if(!found) found = suppliers.find(s => {
+      const sn = normalizeSupplierName(s.name);
+      return sn && (sn.includes(norm) || norm.includes(sn));
+    });
+    return found || null;
+  }
+  function readFileAsDataUrl(file){
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+  function initials(name){
+    return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  }
+  function showToast(msg){
+    toast = msg;
+    render();
+    setTimeout(()=>{ toast=null; render(); }, 2600);
+  }
+
+  /* ---------------- LOGIN VIEW ---------------- */
+  function renderLogin(){
+    root.innerHTML = `
+      <div class="dn-login-wrap">
+        <div class="dn-login-side">
+          <div class="dn-brand-mark"><div class="dn-logo">FS</div>PORTAL DN &middot; FUJI SEAT INDONESIA</div>
+          <div class="dn-login-headline">
+            <h1>Satu tempat untuk semua Delivery Note supplier.</h1>
+            <p>Admin PPIC mengunggah dokumen DN, tiap supplier masuk dengan akunnya sendiri dan hanya melihat dokumen miliknya.</p>
+          </div>
+          <div class="dn-login-foot">Akses dokumen dijaga per akun supplier.</div>
+          <svg class="dn-route" viewBox="0 0 200 200"><path d="M10 170 C 60 170, 40 90, 100 90 S 160 30, 190 30" fill="none" stroke="#ffffff" stroke-width="2"/><circle cx="10" cy="170" r="5" fill="#ffffff"/><circle cx="190" cy="30" r="5" fill="#ffffff"/></svg>
+        </div>
+        <div class="dn-login-form-col">
+          <div class="dn-login-card">
+            <h2>Masuk ke portal</h2>
+            <p class="dn-sub">Gunakan akun yang diberikan oleh admin PPIC.</p>
+            ${notice ? `<div class="dn-error">${notice.msg}</div>` : ''}
+            <form id="dn-login-form">
+              <div class="dn-field">
+                <label for="dn-lu">Username</label>
+                <input id="dn-lu" name="u" autocomplete="username" required />
+              </div>
+              <div class="dn-field">
+                <label for="dn-lp">Password</label>
+                <input id="dn-lp" name="p" type="password" autocomplete="current-password" required />
+              </div>
+              <button type="submit" class="dn-btn dn-btn-primary">Masuk</button>
+            </form>
+            <div class="dn-hint-box">
+              <b>Akun login</b><br/>
+              Gunakan akun yang sudah ditambahkan di tab "Users" pada Google Sheet (lihat Code.gs untuk cara mengisi akun awal).
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('dn-login-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const u = document.getElementById('dn-lu').value.trim();
+      const p = document.getElementById('dn-lp').value;
+      try{
+        const found = await apiCall('login', {username:u, password:p});
+        notice = null;
+        session = found; // {username, role, name}
+        await loadFiles();
+        render();
+      }catch(err){
+        notice = {type:'error', msg: err.message};
+        render();
+      }
+    });
+  }
+
+  /* ---------------- TOPBAR ---------------- */
+  function topbar(){
+    return `
+      <div class="dn-topbar">
+        <div class="dn-topbar-left">
+          <div class="dn-logo">FS</div>
+          <div class="dn-topbar-title">Portal DN Supplier<span>Fuji Seat Indonesia &middot; PPIC</span></div>
+        </div>
+        <div class="dn-topbar-right">
+          <div class="dn-user-chip">
+            <div class="dn-avatar">${initials(session.name)}</div>
+            ${session.name}
+            <span class="dn-role-tag">${session.role==='admin'?'Admin':'Supplier'}</span>
+          </div>
+          <button class="dn-logout-btn" id="dn-logout">${ICONS.logout} Keluar</button>
+        </div>
+      </div>
+    `;
+  }
+  function bindTopbar(){
+    document.getElementById('dn-logout').addEventListener('click', ()=>{
+      session = null; notice=null;
+      render();
+    });
+  }
+
+  /* ---------------- ADMIN VIEW ---------------- */
+  function renderAdmin(){
+    const suppliers = usersCache.filter(u=>u.role==='supplier');
+    const total = filesCache.length;
+    const downloaded = filesCache.filter(f=>f.downloaded).length;
+    const pending = total - downloaded;
+
+    const rows = filesCache.slice().sort((a,b)=> new Date(b.uploadedAt)-new Date(a.uploadedAt)).map(f=>`
+      <tr>
+        <td>${f.supplierName}</td>
+        <td>${ICONS.file} &nbsp;${f.fileName}</td>
+        <td>${fmtDateOnly(f.dnDate)}</td>
+        <td>${fmtDate(f.uploadedAt)}</td>
+        <td>${f.downloaded
+            ? `<span class="dn-badge dn-badge-green">${ICONS.check} Sudah diunduh &middot; ${fmtDate(f.downloadedAt)}</span>`
+            : `<span class="dn-badge dn-badge-amber">${ICONS.clock} Menunggu diunduh</span>`}</td>
+      </tr>
+    `).join('');
+
+    const pendingRows = pendingUploads.map(p => `
+      <div class="dn-pending-row">
+        <div class="dn-pending-file">${ICONS.file} ${p.fileName}</div>
+        <div class="dn-pending-supplier">
+          ${p.autoMatched
+            ? `<span class="dn-badge dn-badge-green">${ICONS.check} ${p.supplierName}</span>`
+            : `<select data-supplier-for="${p.tempId}">
+                 <option value="" ${!p.supplierUsername ? 'selected':''} disabled>Tidak terdeteksi — pilih manual</option>
+                 ${suppliers.map(s=>`<option value="${s.username}" ${p.supplierUsername===s.username?'selected':''}>${s.name}</option>`).join('')}
+               </select>`}
+        </div>
+        <div class="dn-pending-date">
+          <input type="date" value="${p.dnDate || ''}" data-date-for="${p.tempId}" />
+        </div>
+        <button class="dn-remove-btn" data-remove="${p.tempId}" title="Hapus">✕</button>
+      </div>
+    `).join('');
+
+    root.innerHTML = `
+      ${topbar()}
+      <div class="dn-main">
+        <div class="dn-page-head">
+          <h1>Dashboard admin</h1>
+          <p>Unggah Delivery Note per supplier dan pantau status pengunduhannya.</p>
+        </div>
+        ${notice ? `<div class="dn-error">${notice.msg}</div>` : ''}
+        <div class="dn-grid">
+          <div>
+            <div class="dn-panel">
+              <h3>Unggah Delivery Note</h3>
+              <p class="dn-panel-sub">Pilih satu atau beberapa file sekaligus. Supplier &amp; tanggal DN dibaca otomatis dari nama file dengan format <b>NamaSupplier_YYYYMMDD.pdf</b> (mis. SumberMakmur_20260903.pdf) — tidak perlu pilih supplier manual.</p>
+              <div class="dn-file-drop" id="dn-drop">
+                Pilih file PDF (bisa lebih dari satu, maks 8MB per file)
+                <input type="file" id="dn-up-files" accept="application/pdf" multiple />
+              </div>
+            </div>
+
+            <div class="dn-panel dn-panel-alt">
+              <h3>Tambah akun supplier</h3>
+              <p class="dn-panel-sub">Supplier baru login dengan username &amp; password ini.</p>
+              <form id="dn-add-supplier-form">
+                <div class="dn-field">
+                  <label for="dn-as-name">Nama perusahaan</label>
+                  <input id="dn-as-name" required placeholder="mis. PT Karya Logam" />
+                </div>
+                <div class="dn-field">
+                  <label for="dn-as-user">Username</label>
+                  <input id="dn-as-user" required placeholder="mis. sup003" />
+                </div>
+                <div class="dn-field">
+                  <label for="dn-as-pass">Password</label>
+                  <input id="dn-as-pass" required placeholder="min. 4 karakter" />
+                </div>
+                <button type="submit" class="dn-btn dn-btn-ghost" style="width:100%;">${ICONS.plus} Tambah supplier</button>
+              </form>
+              <div class="dn-supplier-list-wrap">
+                ${suppliers.map(s=>`<div class="dn-supplier-mini"><span>${s.name}</span><span class="dn-sm-user">${s.username}</span></div>`).join('') || '<div class="dn-sm-user">Belum ada supplier.</div>'}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            ${pendingUploads.length > 0 ? `
+              <div class="dn-pending-panel">
+                <h3>Konfirmasi ${pendingUploads.length} file sebelum disimpan</h3>
+                <p class="dn-panel-sub">File hijau sudah terdeteksi otomatis. File yang tidak terdeteksi perlu dipilih suppliernya secara manual, dan tanggal DN bisa disesuaikan bila perlu.</p>
+                ${pendingRows}
+                <div class="dn-pending-actions">
+                  <button class="dn-btn dn-btn-secondary" id="dn-confirm-upload">${ICONS.upload} Simpan ${pendingUploads.length} file</button>
+                  <button class="dn-btn dn-btn-ghost" id="dn-cancel-upload">Batalkan</button>
+                </div>
+              </div>
+            ` : ''}
+            <div class="dn-stat-row">
+              <div class="dn-stat"><div class="dn-stat-num">${total}</div><div class="dn-stat-label">Total file diunggah</div></div>
+              <div class="dn-stat dn-stat-amber"><div class="dn-stat-num">${pending}</div><div class="dn-stat-label">Menunggu diunduh</div></div>
+              <div class="dn-stat dn-stat-green"><div class="dn-stat-num">${downloaded}</div><div class="dn-stat-label">Sudah diunduh</div></div>
+            </div>
+            ${total===0 ? `
+              <div class="dn-empty" style="background:#fff;border:1px solid var(--border);border-radius:10px;">
+                <b>Belum ada file DN</b>
+                Unggah file pertama lewat panel di sebelah kiri.
+              </div>
+            ` : `
+              <table class="dn-table">
+                <thead><tr><th>Supplier</th><th>File</th><th>Tanggal DN</th><th>Diunggah</th><th>Status</th></tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            `}
+          </div>
+        </div>
+      </div>
+      ${toast ? `<div class="dn-toast">${ICONS.check} ${toast}</div>` : ''}
+    `;
+
+    bindTopbar();
+
+    document.getElementById('dn-up-files').addEventListener('change', async (e)=>{
+      const files = Array.from(e.target.files || []);
+      if(!files.length) return;
+      let skipped = null;
+      for(const file of files){
+        const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if(!isPdf){ skipped = `File "${file.name}" dilewati (bukan PDF).`; continue; }
+        if(file.size > MAX_PDF_BYTES){ skipped = `File "${file.name}" dilewati (lebih dari 1.5MB).`; continue; }
+        const dataUrl = await readFileAsDataUrl(file);
+        const { supplierRaw, dateIso } = parseDnFilename(file.name);
+        const matched = matchSupplierByName(supplierRaw, suppliers);
+        pendingUploads.push({
+          tempId: 't' + Date.now() + Math.random().toString(16).slice(2),
+          fileName: file.name,
+          dataUrl,
+          supplierUsername: matched ? matched.username : '',
+          supplierName: matched ? matched.name : '',
+          dnDate: dateIso || '',
+          autoMatched: !!matched,
+        });
+      }
+      notice = skipped ? {type:'error', msg: skipped} : null;
+      render();
+    });
+
+    const confirmBtn = document.getElementById('dn-confirm-upload');
+    if(confirmBtn){
+      confirmBtn.addEventListener('click', async ()=>{
+        const incomplete = pendingUploads.filter(p => !p.supplierUsername || !p.dnDate);
+        if(incomplete.length){
+          notice = {type:'error', msg:'Lengkapi supplier dan tanggal DN untuk semua file (yang tidak terdeteksi otomatis) sebelum menyimpan.'};
+          render(); return;
+        }
+        const items = pendingUploads.map(p=>{
+          const supplier = usersCache.find(u=>u.username===p.supplierUsername);
+          return {
+            supplierUsername: p.supplierUsername,
+            supplierName: supplier ? supplier.name : p.supplierName,
+            fileName: p.fileName,
+            dnDate: p.dnDate,
+            dataUrl: p.dataUrl,
+          };
+        });
+        const count = items.length;
+        confirmBtn.disabled = true;
+        try{
+          await apiCall('addFiles', {items});
+          pendingUploads = [];
+          notice = null;
+          await loadFiles();
+          showToast(count + ' file berhasil disimpan');
+        }catch(err){
+          notice = {type:'error', msg:'Gagal menyimpan file ke server: ' + err.message};
+          render();
+        }
+      });
+    }
+    const cancelBtn = document.getElementById('dn-cancel-upload');
+    if(cancelBtn){
+      cancelBtn.addEventListener('click', ()=>{
+        pendingUploads = []; notice = null; render();
+      });
+    }
+    root.querySelectorAll('[data-supplier-for]').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const id = sel.getAttribute('data-supplier-for');
+        const item = pendingUploads.find(p=>p.tempId===id);
+        if(item){
+          item.supplierUsername = sel.value;
+          const su = usersCache.find(u=>u.username===sel.value);
+          item.supplierName = su ? su.name : '';
+        }
+        render();
+      });
+    });
+    root.querySelectorAll('[data-date-for]').forEach(inp=>{
+      inp.addEventListener('change', ()=>{
+        const id = inp.getAttribute('data-date-for');
+        const item = pendingUploads.find(p=>p.tempId===id);
+        if(item) item.dnDate = inp.value;
+        render();
+      });
+    });
+    root.querySelectorAll('[data-remove]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-remove');
+        pendingUploads = pendingUploads.filter(p=>p.tempId!==id);
+        render();
+      });
+    });
+
+    document.getElementById('dn-add-supplier-form').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('dn-as-name').value.trim();
+      const uname = document.getElementById('dn-as-user').value.trim();
+      const pass = document.getElementById('dn-as-pass').value;
+      if(usersCache.find(u=>u.username===uname)){
+        notice = {type:'error', msg:'Username tersebut sudah dipakai.'}; render(); return;
+      }
+      try{
+        await apiCall('addUser', {username:uname, password:pass, role:'supplier', name});
+        notice = null;
+        await loadUsers();
+        showToast('Akun supplier ' + name + ' berhasil dibuat');
+      }catch(err){
+        notice = {type:'error', msg:'Gagal menyimpan akun: ' + err.message}; render();
+      }
+    });
+  }
+
+  /* ---------------- SUPPLIER VIEW ---------------- */
+  function renderSupplier(){
+    const mine = filesCache.filter(f=>f.supplierUsername===session.username)
+                            .sort((a,b)=> new Date(b.uploadedAt)-new Date(a.uploadedAt));
+    root.innerHTML = `
+      ${topbar()}
+      <div class="dn-main">
+        <div class="dn-page-head">
+          <h1>Delivery Note Anda</h1>
+          <p>Unduh dokumen untuk menyiapkan pengiriman barang.</p>
+        </div>
+        ${mine.length===0 ? `
+          <div class="dn-empty" style="background:#fff;border:1px solid var(--border);border-radius:10px;">
+            <b>Belum ada file DN untuk Anda</b>
+            Admin PPIC akan mengunggah dokumen begitu tersedia.
+          </div>
+        ` : mine.map(f=>`
+          <div class="dn-supplier-card ${f.downloaded?'dn-downloaded':'dn-pending'}">
+            <div>
+              <div class="dn-sf-name">${f.fileName}</div>
+              <div class="dn-sf-meta">Tanggal DN: ${fmtDateOnly(f.dnDate)} &middot; Diunggah ${fmtDate(f.uploadedAt)} ${f.downloaded ? '&middot; Diunduh ' + fmtDate(f.downloadedAt) : ''}</div>
+            </div>
+            <button class="dn-icon-btn" data-id="${f.id}">${ICONS.download} ${f.downloaded ? 'Unduh lagi' : 'Unduh'}</button>
+          </div>
+        `).join('')}
+      </div>
+      ${toast ? `<div class="dn-toast">${ICONS.check} ${toast}</div>` : ''}
+    `;
+    bindTopbar();
+    root.querySelectorAll('[data-id]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = btn.getAttribute('data-id');
+        const f = filesCache.find(x=>x.id===id);
+        if(!f) return;
+        btn.disabled = true;
+        try{
+          const { fileName, dataUrl } = await apiCall('downloadFile', {id});
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          if(!f.downloaded){
+            await apiCall('markDownloaded', {id});
+          }
+          showToast('Mengunduh ' + fileName);
+          await loadFiles();
+          render();
+        }catch(err){
+          notice = {type:'error', msg:'Gagal mengunduh file: ' + err.message};
+          btn.disabled = false;
+          render();
+        }
+      });
+    });
+  }
+
+  function render(){
+    if(!session){ renderLogin(); return; }
+    if(session.role==='admin'){ renderAdmin(); } else { renderSupplier(); }
+  }
+
+  (async function init(){
+    root.innerHTML = '<div style="padding:40px;text-align:center;color:#5C6478;font-family:sans-serif;">Memuat portal…</div>';
+    await loadUsers();
+    render();
+  })();
+})();
+</script>
