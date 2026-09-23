@@ -223,6 +223,7 @@
     logout:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
     file:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
     plus:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    trash:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
   };
 
   // ====== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA SETELAH DEPLOY ======
@@ -411,6 +412,7 @@
         <td>${f.downloaded
             ? `<span class="dn-badge dn-badge-green">${ICONS.check} Sudah diunduh &middot; ${fmtDate(f.downloadedAt)}</span>`
             : `<span class="dn-badge dn-badge-amber">${ICONS.clock} Menunggu diunduh</span>`}</td>
+        <td><button class="dn-remove-btn" data-delete-file="${f.id}" title="Hapus file">${ICONS.trash}</button></td>
       </tr>
     `).join('');
 
@@ -478,8 +480,8 @@
           <div>
             ${pendingUploads.length > 0 ? `
               <div class="dn-pending-panel">
-                <h3>Konfirmasi ${pendingUploads.length} file sebelum disimpan</h3>
-                <p class="dn-panel-sub">File hijau sudah terdeteksi otomatis. File yang tidak terdeteksi perlu dipilih suppliernya secara manual, dan tanggal DN bisa disesuaikan bila perlu.</p>
+                <h3>${pendingUploads.length} file perlu dilengkapi manual</h3>
+                <p class="dn-panel-sub">Nama supplier/tanggal tidak terdeteksi otomatis dari nama file. Pilih supplier &amp; tanggal DN di bawah, lalu simpan.</p>
                 ${pendingRows}
                 <div class="dn-pending-actions">
                   <button class="dn-btn dn-btn-secondary" id="dn-confirm-upload">${ICONS.upload} Simpan ${pendingUploads.length} file</button>
@@ -499,7 +501,7 @@
               </div>
             ` : `
               <table class="dn-table">
-                <thead><tr><th>Supplier</th><th>File</th><th>Tanggal DN</th><th>Diunggah</th><th>Status</th></tr></thead>
+                <thead><tr><th>Supplier</th><th>File</th><th>Tanggal DN</th><th>Diunggah</th><th>Status</th><th>Aksi</th></tr></thead>
                 <tbody>${rows}</tbody>
               </table>
             `}
@@ -515,14 +517,15 @@
       const files = Array.from(e.target.files || []);
       if(!files.length) return;
       let skipped = null;
+      const autoItems = [];
       for(const file of files){
         const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
         if(!isPdf){ skipped = `File "${file.name}" dilewati (bukan PDF).`; continue; }
-        if(file.size > MAX_PDF_BYTES){ skipped = `File "${file.name}" dilewati (lebih dari 1.5MB).`; continue; }
+        if(file.size > MAX_PDF_BYTES){ skipped = `File "${file.name}" dilewati (lebih dari 8MB).`; continue; }
         const dataUrl = await readFileAsDataUrl(file);
         const { supplierRaw, dateIso } = parseDnFilename(file.name);
         const matched = matchSupplierByName(supplierRaw, suppliers);
-        pendingUploads.push({
+        const entry = {
           tempId: 't' + Date.now() + Math.random().toString(16).slice(2),
           fileName: file.name,
           dataUrl,
@@ -530,10 +533,32 @@
           supplierName: matched ? matched.name : '',
           dnDate: dateIso || '',
           autoMatched: !!matched,
-        });
+        };
+        if(matched && dateIso){
+          autoItems.push(entry); // supplier & tanggal terdeteksi lengkap -> simpan otomatis
+        }else{
+          pendingUploads.push(entry); // perlu dilengkapi manual
+        }
       }
       notice = skipped ? {type:'error', msg: skipped} : null;
       render();
+
+      if(autoItems.length){
+        try{
+          await apiCall('addFiles', { items: autoItems.map(p=>({
+            supplierUsername: p.supplierUsername,
+            supplierName: p.supplierName,
+            fileName: p.fileName,
+            dnDate: p.dnDate,
+            dataUrl: p.dataUrl,
+          })) });
+          await loadFiles();
+          showToast(autoItems.length + ' file tersimpan otomatis');
+        }catch(err){
+          notice = {type:'error', msg:'Gagal menyimpan otomatis: ' + err.message};
+          render();
+        }
+      }
     });
 
     const confirmBtn = document.getElementById('dn-confirm-upload');
@@ -599,6 +624,24 @@
         const id = btn.getAttribute('data-remove');
         pendingUploads = pendingUploads.filter(p=>p.tempId!==id);
         render();
+      });
+    });
+    root.querySelectorAll('[data-delete-file]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = btn.getAttribute('data-delete-file');
+        const f = filesCache.find(x=>x.id===id);
+        if(!f) return;
+        const ok = window.confirm(`Hapus file "${f.fileName}" milik ${f.supplierName}? Tindakan ini tidak bisa dibatalkan.`);
+        if(!ok) return;
+        btn.disabled = true;
+        try{
+          await apiCall('deleteFile', {id});
+          await loadFiles();
+          showToast('File berhasil dihapus');
+        }catch(err){
+          notice = {type:'error', msg:'Gagal menghapus file: ' + err.message};
+          render();
+        }
       });
     });
 
