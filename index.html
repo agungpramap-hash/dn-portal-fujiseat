@@ -324,7 +324,6 @@
           <div class="dn-brand-mark"><div class="dn-logo">FS</div>PORTAL DN &middot; FUJI SEAT INDONESIA</div>
           <div class="dn-login-headline">
             <h1>Satu tempat untuk semua Delivery Note supplier.</h1>
-            <p>Admin PPIC mengunggah dokumen DN, tiap supplier masuk dengan akunnya sendiri dan hanya melihat dokumen miliknya.</p>
           </div>
           <div class="dn-login-foot">Akses dokumen dijaga per akun supplier.</div>
           <svg class="dn-route" viewBox="0 0 200 200"><path d="M10 170 C 60 170, 40 90, 100 90 S 160 30, 190 30" fill="none" stroke="#ffffff" stroke-width="2"/><circle cx="10" cy="170" r="5" fill="#ffffff"/><circle cx="190" cy="30" r="5" fill="#ffffff"/></svg>
@@ -345,10 +344,6 @@
               </div>
               <button type="submit" class="dn-btn dn-btn-primary">Masuk</button>
             </form>
-            <div class="dn-hint-box">
-              <b>Akun login</b><br/>
-              Gunakan akun yang sudah ditambahkan di tab "Users" pada Google Sheet (lihat Code.gs untuk cara mengisi akun awal).
-            </div>
           </div>
         </div>
       </div>
@@ -361,7 +356,12 @@
         const found = await apiCall('login', {username:u, password:p});
         notice = null;
         session = found; // {username, role, name}
-        await loadFiles();
+        sessionStorage.setItem('dnportal_session', JSON.stringify(session));
+        if(session.role === 'admin'){
+          await Promise.all([loadUsers(), loadFiles()]); // paralel, bukan berurutan
+        }else{
+          await loadFiles(); // supplier tidak butuh data users
+        }
         render();
       }catch(err){
         notice = {type:'error', msg: err.message};
@@ -392,6 +392,7 @@
   function bindTopbar(){
     document.getElementById('dn-logout').addEventListener('click', ()=>{
       session = null; notice=null;
+      sessionStorage.removeItem('dnportal_session');
       render();
     });
   }
@@ -729,7 +730,16 @@
 
   (async function init(){
     root.innerHTML = '<div style="padding:40px;text-align:center;color:#5C6478;font-family:sans-serif;">Memuat portal…</div>';
-    await loadUsers();
+    try{
+      const saved = sessionStorage.getItem('dnportal_session');
+      if(saved) session = JSON.parse(saved);
+    }catch(e){ session = null; }
+    if(session && session.role === 'admin'){
+      await Promise.all([loadUsers(), loadFiles()]);
+    }else if(session){
+      await loadFiles();
+    }
+    // halaman login tidak perlu memuat data apa pun dari server
     render();
   })();
 })();
